@@ -28,7 +28,7 @@ from sec_api import ExtractorApi
 import pandas as pd
 
 
-queryApi = QueryApi(api_key="9da9b5776ef77dad3732e5e9d839ef14b409d6c927739c4689520b43993637be")
+queryApi = QueryApi(api_key="insert api key here")
 
 query = {
   "query": { "query_string": { 
@@ -110,7 +110,7 @@ df_all = pd.concat(all_dfs).reset_index(drop=True)
 #%%
 
 for url in df_all.index:
-     extractorApi = ExtractorApi("9da9b5776ef77dad3732e5e9d839ef14b409d6c927739c4689520b43993637be")
+     extractorApi = ExtractorApi("insert api key here")
      section_10k_item7 = extractorApi.get_section(df_all['linkToFilingDetails'][url],"6",'text')
      print(section_10k_item7)
      with open('C:/Users/benri/FIN 510/10k- api work/TSLA_10k_item2.txt', "w") as f:
