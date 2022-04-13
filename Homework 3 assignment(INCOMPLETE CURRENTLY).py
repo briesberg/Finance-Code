@@ -1,13 +1,14 @@
 from sec_api import QueryApi
 from sec_api import ExtractorApi
 import pandas as pd
+import numpy as np
 
-
+#%%
 queryApi = QueryApi(api_key="9da9b5776ef77dad3732e5e9d839ef14b409d6c927739c4689520b43993637be")
 
 query = {
   "query": { "query_string": { 
-      "query": "ticker:AAPL AND filedAt:{2020-01-01 TO 2020-12-31} AND formType:\"10-K\"" 
+      "query": "ticker:AAPL AND filedAt:{2016-01-01 TO 2020-12-31} AND formType:\"10-K\"" 
     } }
   ,
   "from": "0",
@@ -17,7 +18,7 @@ query = {
   }
 query_2 ={
   "query": { "query_string": { 
-      "query": "ticker:COKE AND filedAt:{2020-01-01 TO 2020-12-31} AND formType:\"10-K\"" 
+      "query": "ticker:COKE AND filedAt:{2016-01-01 TO 2020-12-31} AND formType:\"10-K\"" 
     } }
   ,
   "from": "0",
@@ -26,7 +27,7 @@ query_2 ={
   }
 query_3 ={
   "query": { "query_string": { 
-      "query": "ticker:GOOGL AND filedAt:{2020-01-01 TO 2020-12-31} AND formType:\"10-K\"" 
+      "query": "ticker:GOOGL AND filedAt:{2016-01-01 TO 2020-12-31} AND formType:\"10-K\"" 
     } }
   ,
   "from": "0",
@@ -35,7 +36,7 @@ query_3 ={
   }
 query_4 ={
   "query": { "query_string": { 
-      "query": "ticker:JPM AND filedAt:{2020-01-01 TO 2020-12-31} AND formType:\"10-K\"" 
+      "query": "ticker:JPM AND filedAt:{2016-01-01 TO 2020-12-31} AND formType:\"10-K\"" 
     } }
   ,
   "from": "0",
@@ -44,7 +45,7 @@ query_4 ={
   }
 query_5 ={
   "query": { "query_string": { 
-      "query": "ticker:NVDA AND filedAt:{2020-01-01 TO 2020-12-31} AND formType:\"10-K\"" 
+      "query": "ticker:NVDA AND filedAt:{2016-01-01 TO 2020-12-31} AND formType:\"10-K\"" 
     } }
   ,
   "from": "0",
@@ -79,9 +80,9 @@ filings_coke = queryApi.get_filings(query_2)
 df_coke = pd.json_normalize(filings_coke['filings'])
 filings_googl = queryApi.get_filings(query_3)
 df_googl = pd.json_normalize(filings_googl['filings'])
-#df_googl = df_googl.drop([1,5])
-#df_googl = df_googl.reset_index()
-#df_googl = df_googl.drop(columns=('index'))
+df_googl = df_googl.drop([1,5])
+df_googl = df_googl.reset_index()
+df_googl = df_googl.drop(columns=('index'))
 
 filings_jpm = queryApi.get_filings(query_4)
 df_jpm = pd.json_normalize(filings_jpm['filings'])
@@ -115,20 +116,19 @@ for url in df_all.index:
      section_10k_item7 = extractorApi.get_section(df_all['linkToFilingDetails'][url],"7",'text')
      final_10k.append(section_10k_item7)
 
+
+
 def txt2sentence(txt):
     import nltk
     nltk.download('punkt')
     from nltk.tokenize import sent_tokenize
-    sentences = sent_tokenize(txt)
+    sentences = sent_tokenize(txt, language= "english")
     df=pd.DataFrame(sentences)
     return df  
 
-results=[]
 
-for string in final_10k:
-    for i in string:
-        text = string
-        df_sentence = txt2sentence(text)
-        results.append(df_sentence)
-        print(text)
-  
+
+#pip install transformers
+from transformers import BertTokenizer, BertForSequenceClassification
+
+
